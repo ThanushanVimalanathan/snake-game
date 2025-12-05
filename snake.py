@@ -36,7 +36,6 @@ black = pygame.Color(0,0,0)
 gameClock = pygame.time.Clock()
 
 #define key
-
 def getKey():
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
