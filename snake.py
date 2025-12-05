@@ -122,7 +122,37 @@ class snake:
             
         elif(self.stack[last_element].direction == KEY["DOWN"]):
             newSegment = segment(self.stack[last_element].x,self.stack[last_element].y + SNAKE_SIZE)
-            blackBox = segment(newSegment.x, newSegment.y + SEPERATION)  
+            blackBox = segment(newSegment.x, newSegment.y + SEPERATION)
+            
+        elif(self.stack[last_element].direction == KEY["LEFT"]):
+            newSegment = segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element]-y)
+            blackBox = segment(newSegment.x - SEPERATION,newSegment.y)  
+
+        blackBox.color = "NULL"
+        self.stack.append(newSegment)
+        self.stack.append(blackBox)
+        
+    def iterateSegments(self,delta):
+        pass
+    
+    def setDirection(self,direction):
+        if(self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or self.direction == KEY["left"] and direction == KEY["RIGHT"]):
+            pass
+        elif(self.direction == KEY["UP"] and direction == KEY["DOWN"] or self.direction == KEY["UP"] and direction == KEY["DOWN"]):
+            pass
+        else:
+            self.direction = direction
+    
+    def get_rect(self):
+        rect = (self.x,self.y)
+        return rect
+        
+    def getX(self):
+        return self.x
+    
+    def getY(self):
+        return self.y
+            
         
         
 #define key
