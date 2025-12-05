@@ -5,13 +5,13 @@ import random
 import math
 
 pygame.init()
-pygame.display.setCaption("Paambu game")
+pygame.display.set_caption("Paambu game")
 pygame.font.init()
-random.speed()
+random.seed()
 
 # declare global constant definitions
 
-speed = 0.30
+SPEED = 0.30
 SNAKE_SIZE = 9
 APPLE_SIZE = SNAKE_SIZE
 SEPERATION = 10 #seperation between two pixel
@@ -41,9 +41,90 @@ def checkCollision(posA,As,posB,Bs):
     if(posA.x < posB.x+Bs and posA.x+As > posB.x and posA.y < posB.y+Bs and posA.y+As > posB.y):
         return True
     return False
-    
-    
 
+# check boundaries here we are not limiting boundaries
+def checkLimits(snake):
+    if(snake.x > SCREEN_WIDTH):
+        snake.x = SNAKE_SIZE
+    if(snake.x < 0):
+        snake.x = SCREEN_WIDTH - SNAKE_SIZE
+    if(snake.y > SCREEN_HEIGHT):
+        snake.y = SNAKE_SIZE
+    if(snake.y < 0):
+        snake.y -SCREEN_HEIGHT - SNAKE_SIZE
+        
+# make class for food ofthe snake let's name it as apple
+
+class Apple:
+    def __init__(self,x,y,state):
+        self.x = x
+        self.y = y
+        self.state = state
+        self.color = pygame.color.Color("orange") # colour of food
+        
+    def draw(self,screen):
+        pygame.draw.rect(screen,self.color,(self.x,self.y,APPLE_SIZE,APPLE_SIZE),0)
+        
+class segment:
+    #initial snake will move in up direction
+    self.x = x
+    self.y = y
+    self.direction = KEY["UP"]
+    self.color = "white"
+    
+    
+class snake:
+    def __init__(self,x,y):
+         self.x = x
+         self.y = y
+         self.direction = KEY["UP"]
+         self.stack = []
+         self.stack.append(self)
+         blackBox = segment(self.x,self.y + SEPERATION)
+         blackBox.direction = KEY["UP"]
+         blackBox.color = "NULL"
+         self.stack.append(blackBox)
+        
+    
+# Define movment of the snake
+    def move(self):
+        last_element = len(self.stack)-1
+        while(last_element):
+            self.stack[last_element].direction = self.stack[last_element].direction
+            self.stack[last_element].x = self.stack[last_element -1].x
+            self.stack[last_element].y = self.stack[last_element -1].y
+            last_element -= 1
+        if(len(self,stack) <2):
+            last_element = self
+        else:
+            last_segment = self.stack.pop(last_element)
+        last_segment.direction = self.stack[0].direction
+        if(self.stack[0].direction == KEY["UP"]):
+            last_segment.y = self.stack[0].y - (SPEED*FPS)
+        elif(self.stack[0].direction == KEY["DOWN"]):
+            last_segment.y = self.stack[0].y + (SPEED*FPS)
+        elif(self.stack[0].direction == KEY["LEFT"]):
+            last_segment.x = self.stack[0].x - (SPEED*FPS)
+        elif(self.stack[0].direction == KEY["RIGHT"]):
+            last_segment.x = self.stack[0].x - (SPEED*FPS)
+        self.stack.insert(0,last_segment)
+        
+    def getHead(self):# It will be always 0 index
+        return(self.stack[0]) 
+    # now whensnake its food it will grow so for that will add that food to stack
+    
+    def grow(self):
+        last_element = len(self.stack)-1
+        self.stack[last_element].direction = self.stack[last_element].direction
+        if(self.stack[last_element].direction == KEY["up"]):
+            newSegment = segment(self.stack[last_element].x,self.stack[last_element].y - SNAKE_SIZE)
+            blackBox = segment(newSegment.x, newSegment.y - SEPERATION)
+            
+        elif(self.stack[last_element].direction == KEY["DOWN"]):
+            newSegment = segment(self.stack[last_element].x,self.stack[last_element].y + SNAKE_SIZE)
+            blackBox = segment(newSegment.x, newSegment.y + SEPERATION)  
+        
+        
 #define key
 def getKey():
     for event in pygame.event.get():
@@ -64,8 +145,9 @@ def getKey():
             elif event.key == pygame.K_n:#for continue
                 return "no"
         
-        if event.type == pygame.QUITE:
+        if event.type == pygame.QUIT:
             sys.exit(0)
+    return None
             
 def endGame():
     message = game_over_font.render("Soli mudinchu",1,pygame.Color("white"))
