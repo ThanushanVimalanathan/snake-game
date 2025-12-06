@@ -66,14 +66,15 @@ class Apple:
         pygame.draw.rect(screen,self.color,(self.x,self.y,APPLE_SIZE,APPLE_SIZE),0)
         
 class segment:
-    #initial snake will move in up direction
-    self.x = x
-    self.y = y
-    self.direction = KEY["UP"]
-    self.color = "white"
+    def __init__(self, x, y, direction="UP", color="white"):
+        #initial snake will move in up direction
+        self.x = x
+        self.y = y
+        self.direction = direction  # Store the direction name
+        self.color = color
     
     
-class snake:
+class Snake:
     def __init__(self,x,y):
          self.x = x
          self.y = y
@@ -94,7 +95,7 @@ class snake:
             self.stack[last_element].x = self.stack[last_element -1].x
             self.stack[last_element].y = self.stack[last_element -1].y
             last_element -= 1
-        if(len(self,stack) <2):
+        if(len(self.stack) <2):
             last_element = self
         else:
             last_segment = self.stack.pop(last_element)
@@ -125,8 +126,12 @@ class snake:
             blackBox = segment(newSegment.x, newSegment.y + SEPERATION)
             
         elif(self.stack[last_element].direction == KEY["LEFT"]):
-            newSegment = segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element]-y)
-            blackBox = segment(newSegment.x - SEPERATION,newSegment.y)  
+            newSegment = segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
+            blackBox = segment(newSegment.x - SEPERATION , newSegment.y)  
+            
+        elif(self.stack[last_element].direction == KEY["RIGHT"]):
+            newSegment = segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
+            blackBox = segment(newSegment.x - SEPERATION , newSegment.y)  
 
         blackBox.color = "NULL"
         self.stack.append(newSegment)
@@ -152,7 +157,27 @@ class snake:
     
     def getY(self):
         return self.y
+    
+    #Define function of crashing when snake eatitself
+    def checkCrashing(self):
+        counter = 1
+        while (counter < len(self.stack)-1):
+            if(checkCollision(self.stack[0],SNAKE_SIZE , self.stack[counter],SNAKE_SIZE) and self.stack[counter].color != "NULL"):
+                return True
+            counter += 1
+        return False
+    
+    def draw(self,screen):
+        pygame.draw.rect(screen,pygame.Color.Color("green"), (self.stack[0].x , self.stack[0].y,SNAKE_SIZE,SNAKE_SIZE),0)
+        
+        counter = 1
+        while(counter <len(self.stack)):
+            if(self.stack[counter].color == "NULL"):
+                counter += 1
+                continue
             
+            pygame.draw.rect(screen, pygame.color.Color("yellow"), (self.stack[counter].x,self.stack[counter].y, SNAKE_SIZE , SNAKE_SIZE),0)
+            counter += 1
         
         
 #define key
@@ -216,3 +241,13 @@ def exitScreen():
     
 def main():
     score = 0
+    
+    #initialization of snake
+    mySnake = Snake(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
+    mySnake.setDirection["UP"]
+    mySnake.move()
+    start_segment = 3 #initial segment of snake
+    while(start_segment > 0):
+        mySnake.grow()
+        mySnake.move()
+        start_segment -= 1
